@@ -82,6 +82,20 @@ class Matrix(object):
         return Matrix.from_2d_array(mat)
 
 
+    @classmethod
+    def dot(self, a, b):
+        assert (a._tensor_type, b._tensor_type) == (self.TensorType.vector, self.TensorType.vector), 'Can\'t perform dot product on a non-vector'
+        assert a._n_elems == b._n_elems, 'The number of elements must be equal on both vectors'
+
+        if a._n_rows > 1:
+            a = a.transpose()
+        
+        if b._n_cols > 1:
+            b.transpose()
+
+        return (a * b)._mat[0][0]
+
+    
     def transpose(self):
         mat = [
             [self._mat[i][j] for i in range(self._n_rows)]
@@ -89,29 +103,6 @@ class Matrix(object):
         ]
 
         return Matrix.from_2d_array(mat)
-
-
-    @classmethod
-    def dot(self, a, b):
-        assert (a._tensor_type, b._tensor_type) == (self.TensorType.vector, self.TensorType.vector), 'Can\'t perform dot product on a non-vector'
-        assert a._n_elems == b._n_elems, 'The number of elements must be equal on both vectors'
-
-        el_a = []
-        el_b = []
-
-        for i in a._mat:
-            for j in i:
-                el_a.append(j)
-        
-        for i in b._mat:
-            for j in i:
-                el_b.append(j)
-
-        res = 0
-        for i in range(len(el_a)):
-            res += el_a[i] * el_b[i]
-
-        return res
 
 
     def __mul__(self, other):
@@ -195,24 +186,24 @@ class Matrix(object):
     pass
 
 
-A = Matrix.from_2d_array([
-    [3, 3, 2],
-    [1, 1, 3],
-    [3, 1, 2]
-])
+# A = Matrix.from_2d_array([
+#     [3, 3, 2],
+#     [1, 1, 3],
+#     [3, 1, 2]
+# ])
 
 
-B = Matrix.from_2d_array([
-    [2, 0, 0],
-    [0, 2, 0],
-    [0, 0, 2]
-])
+# B = Matrix.from_2d_array([
+#     [2, 0, 0],
+#     [0, 2, 0],
+#     [0, 0, 2]
+# ])
 
 
-v = Matrix.col_vector([1, 2, 3])
+# v = Matrix.col_vector([1, 2, 3])
 
 
-a = Matrix.col_vector([1.0, 0.25])
-b = Matrix.col_vector([0.5, 1.0])
+# a = Matrix.col_vector([1.0, 0.25])
+# b = Matrix.col_vector([0.5, 1.0])
 
-print(Matrix.dot(a, b))
+# print(Matrix.dot(a, b))
