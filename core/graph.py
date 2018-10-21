@@ -78,9 +78,15 @@ class Graph:
         return distances, prev
     
 
-    def is_strongly_connected():
+    def is_strongly_connected(self):
+        for node in range(self._n_nodes):
+            (dists, prevs) = self.dijkstra(node)
 
-        return
+            for d in dists:
+                if d is None:
+                    return False
+
+        return True
 
 
     def __str__(self):
@@ -107,12 +113,13 @@ class Graph:
 
 
 
-g = Graph([
-    [None, 99, 50, None, None],
-    [None, None, 50, 50, 50],
-    [None, None, None, 99, None],
-    [None, None, None, None, 75],
-    [None, None, None, None, None]
-])
+# g = Graph([
+#     [None, 99, 50, None, None],
+#     [None, None, 50, 50, 50],
+#     [None, None, None, 99, None],
+#     [None, None, None, None, 75],
+#     [None, None, None, None, None]
+# ])
 
-print(g.dijkstra(0))
+# print(g.dijkstra(0))
+# print(g.is_strongly_connected())

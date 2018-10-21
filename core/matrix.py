@@ -1,12 +1,13 @@
 from enum import Enum
 
+from graph import Graph
+ 
 class Matrix(object):
     _mat = None
     _n_rows = None
     _n_cols = None
     
     _n_elems = None
-
 
     class TensorType(Enum):
         scalar = 0
@@ -73,9 +74,9 @@ class Matrix(object):
 
 
     @classmethod
-    def identity(self, n_rows, n_cols):
+    def identity(self, n_rows):
         mat = [
-            [1 if i == j else 0 for j in range(n_cols)]
+            [1 if i == j else 0 for j in range(n_rows)]
             for i in range(n_rows)
         ]
 
@@ -181,17 +182,63 @@ class Matrix(object):
             res += ']\n'
         res += ']'
 
-        return res                
+        return res
+
+    
+
+    def get_reduction_permutation_matrix(self):
+        assert self._n_rows == self._n_cols, 'The matrix must be square'
+
+        adj_mat = [
+            [None if el == 0 else el for el in row]
+            for row in self._mat
+        ]
+
+        g = Graph(adj_mat)
+        if g.is_strongly_connected():
+            return Matrix.identity(self._n_rows)
+        
+
+        reachables = [i for i in range(g._n_nodes)]
+
+        for i in range(g._n_nodes):
+            (dists, prevs) = g.dijkstra(i)
+            
+            for j in reachables:
+                if dists[j] is None:
+                    reachables.remove(j)
+        
+
+        identity = Matrix.identity(g._n_nodes)._mat
+        perm_mat = []
+        for i in reachables:
+            perm_mat.append(identity[i])
+        
+        for i in range(g._n_nodes):
+            if i not in reachables:
+                perm_mat.append(identity[i])
+
+        return Matrix.from_2d_array(perm_mat).transpose()
+
+
+    def reduce(self):
+        prem_mat = self.get_reduction_permutation_matrix()
+        return prem_mat.transpose() * self * prem_mat
+
 
     pass
 
 
-# A = Matrix.from_2d_array([
-#     [3, 3, 2],
-#     [1, 1, 3],
-#     [3, 1, 2]
-# ])
+A = Matrix.from_2d_array([
+    [-4, 0, -1, 0],
+    [2, 7, 8, -3],
+    [0, 0, 2, 0],
+    [1, 77, -12, 33]
+])
 
+# print(A)
+# print(A.get_reduction_permutation_matrix())
+# print(A.reduce())
 
 # B = Matrix.from_2d_array([
 #     [2, 0, 0],
