@@ -240,12 +240,6 @@ A = Matrix.from_2d_array([
 # print(A.get_reduction_permutation_matrix())
 # print(A.reduce())
 
-# B = Matrix.from_2d_array([
-#     [2, 0, 0],
-#     [0, 2, 0],
-#     [0, 0, 2]
-# ])
-
 
 # v = Matrix.col_vector([1, 2, 3])
 
